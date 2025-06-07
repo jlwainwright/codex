@@ -20,6 +20,7 @@ fi
 # analysis and questionnaire answers.
 PROJECT_DIR=$(pwd)
 ANALYSIS_FILE=$(mktemp)
+PRD_CONTENT=""
 
 # ---------------------------------------------------------------
 # Gather a quick summary of the project so the model knows what it
@@ -45,6 +46,18 @@ if [ -f requirements.txt ]; then
   echo >> "$ANALYSIS_FILE"
   echo '## requirements.txt' >> "$ANALYSIS_FILE"
   cat requirements.txt >> "$ANALYSIS_FILE"
+fi
+
+# ---------------------------------------------------------------
+# Look for a Product Requirements Document (PRD) to incorporate
+# high-level guidance into AGENT.md. We scan common filenames.
+# ---------------------------------------------------------------
+PRD_PATH=$(find . -maxdepth 3 -type f \( -iname 'PRD.md' -o -iname '*product*requirements*' -o -iname '*prd*' \) | head -n 1)
+if [ -n "$PRD_PATH" ]; then
+  PRD_CONTENT=$(head -n 200 "$PRD_PATH")
+  echo >> "$ANALYSIS_FILE"
+  echo '## Product Requirements Document snippet' >> "$ANALYSIS_FILE"
+  echo "$PRD_CONTENT" >> "$ANALYSIS_FILE"
 fi
 
 # ---------------------------------------------------------------
@@ -90,6 +103,9 @@ fi
 USER_PROMPT="Project details:\n$(cat "$ANALYSIS_FILE")\n\nQuestionnaire:\n$(cat "$QUESTIONNAIRE_FILE")"
 if [ -n "$PPLX_INFO" ]; then
   USER_PROMPT+="\n\nPerplexity insights:\n$PPLX_INFO"
+fi
+if [ -n "$PRD_CONTENT" ]; then
+  USER_PROMPT+="\n\nProduct Requirements Document:\n$PRD_CONTENT"
 fi
 USER_PROMPT+="\n\nWrite AGENT.md instructions."
 
