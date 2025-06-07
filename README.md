@@ -143,6 +143,33 @@ That's it - Codex will scaffold a file, run it inside a sandbox, install any
 missing dependencies, and show you the live result. Approve the changes and
 they'll be committed to your working directory.
 
+### Generate a starter `AGENT.md`
+
+Use the helper script [`init_codex_cli.sh`](./codex-cli/scripts/init_codex_cli.sh)
+to bootstrap a project for Codex CLI. Run it from your project root and answer a
+few yes/no questions. The script analyzes your files, fetches Perplexity research,
+and looks for a Product Requirements Document (PRD) if present. All of this context
+is sent to OpenAI to produce an `AGENT.md` plus optional setup files like `.env.example`
+and `setup.sh`.
+
+#### Step-by-step guide
+
+1. Ensure `jq` is installed and export your `OPENAI_API_KEY`. Optionally set
+   `PPLX_API_KEY` for Perplexity research.
+2. Navigate to your project root and run:
+
+   ```bash
+   bash ./codex-cli/scripts/init_codex_cli.sh
+   ```
+
+3. Answer the yes/no questions about Docker, `.env.example`, and sandbox
+   instructions.
+4. The script scans your files, pulls in any Product Requirements Document, and
+   sends the context (plus optional Perplexity insights) to OpenAI.
+5. `AGENT.md` is created in the project root. Depending on your answers,
+   `.env.example` and `setup.sh` may also appear.
+6. Open `AGENT.md` and follow the instructions to start using Codex CLI.
+
 ---
 
 ## Why Codex?
